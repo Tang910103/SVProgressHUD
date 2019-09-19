@@ -6,7 +6,8 @@
 //
 
 #import "ViewController.h"
-#import "SVProgressHUD.h"
+#import "XCProgressHUD.h"
+#define SV_APP_EXTENSIONS @"sdf"
 
 @interface ViewController()
 
@@ -64,7 +65,8 @@
     NSLog(@"Status user info key: %@", notification.userInfo[SVProgressHUDStatusUserInfoKey]);
     
     if([notification.name isEqualToString:SVProgressHUDDidReceiveTouchEventNotification]){
-        [self dismiss];
+//        [self dismiss];
+        NSLog(@"%d",SVProgressHUD.isVisible);
     }
 }
 
@@ -72,44 +74,56 @@
 #pragma mark - Show Methods Sample
 
 - (void)show {
-    [SVProgressHUD show];
+    [XCProgressHUD showLoadingHUDWithMsg:@"加载中…"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [XCProgressHUD dismiss];
+    });
     self.activityCount++;
 }
 
 - (void)showWithStatus {
-	[SVProgressHUD showWithStatus:@"Doing Stuff"];
+    [XCProgressHUD showToast:@"文本内容，不超过14个字位符文本内容" duration:0.5];
     self.activityCount++;
 }
 
 static float progress = 0.0f;
 
 - (IBAction)showWithProgress:(id)sender {
-    progress = 0.0f;
-    [SVProgressHUD showProgress:0 status:@"Loading"];
+    progress = 0;
     [self performSelector:@selector(increaseProgress) withObject:nil afterDelay:0.1f];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        progress = 0.5f;
+        [self performSelector:@selector(increaseProgress) withObject:nil afterDelay:0.1f];
+    });
     self.activityCount++;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [XCProgressHUD dismiss];
+    });
 }
 
 - (void)increaseProgress {
-    progress += 0.05f;
-    [SVProgressHUD showProgress:progress status:@"Loading"];
+//    progress += 0.05f;
+    UIView *v = [UIView.alloc initWithFrame:CGRectMake(0, 0, 50, 50)];
+    v.backgroundColor = UIColor.redColor;
+//    [XCProgressHUD setContainerView:v];
+    [XCProgressHUD showProgress:progress];
 
-    if(progress < 1.0f){
-        [self performSelector:@selector(increaseProgress) withObject:nil afterDelay:0.1f];
-    } else {
-        if (self.activityCount > 1) {
-            [self performSelector:@selector(popActivity) withObject:nil afterDelay:0.4f];
-        } else {
-            [self performSelector:@selector(dismiss) withObject:nil afterDelay:0.4f];
-        }
-    }
+//    if(progress < 1.0f){
+//        [self performSelector:@selector(increaseProgress) withObject:nil afterDelay:0.1f];
+//    } else {
+//        if (self.activityCount > 1) {
+//            [self performSelector:@selector(popActivity) withObject:nil afterDelay:0.4f];
+//        } else {
+//            [self performSelector:@selector(dismiss) withObject:nil afterDelay:0.4f];
+//        }
+//    }
 }
 
 
 #pragma mark - Dismiss Methods Sample
 
 - (void)dismiss {
-	[SVProgressHUD dismiss];
+	[XCProgressHUD dismiss];
     self.activityCount = 0;
 }
 
@@ -122,17 +136,17 @@ static float progress = 0.0f;
 }
 
 - (IBAction)showInfoWithStatus {
-    [SVProgressHUD showInfoWithStatus:@"Useful Information."];
+    [XCProgressHUD showWarningWithStatus:@"警示内容"];
     self.activityCount++;
 }
 
 - (void)showSuccessWithStatus {
-	[SVProgressHUD showSuccessWithStatus:@"Great Success!"];
+	[XCProgressHUD showSuccessWithStatus:@"成功"];
     self.activityCount++;
 }
 
 - (void)showErrorWithStatus {
-	[SVProgressHUD showErrorWithStatus:@"Failed with Error"];
+	[XCProgressHUD showErrorWithStatus:@"失败"];
     self.activityCount++;
 }
 
