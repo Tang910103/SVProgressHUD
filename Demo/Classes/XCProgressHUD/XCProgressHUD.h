@@ -10,6 +10,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface XCProgressHUD : SVProgressHUD
++ (XCProgressHUD *)sharedView;
+/**
+ 新潮默认样式
+ */
++ (void)defaultStyle;
+
 + (void)showToast:(nullable NSString *)msg;
 + (void)showToast:(nullable NSString *)msg duration:(NSTimeInterval)duration;
 

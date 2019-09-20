@@ -1,34 +1,36 @@
 //
-//  ViewController.m
-//  SVProgressHUD, https://github.com/SVProgressHUD/SVProgressHUD
+//  XCViewController.m
+//  XCProgressHUD, https://github.com/SVProgressHUD/SVProgressHUD
 //
 //  Copyright (c) 2011-2019 Sam Vermette and contributors. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "SVProgressHUD.h"
+#import "XCViewController.h"
+#import "XCProgressHUD.h"
 
-@interface ViewController()
+@interface XCViewController()
 
 @property (nonatomic, readwrite) NSUInteger activityCount;
 @property (weak, nonatomic) IBOutlet UIButton *popActivityButton;
 
 @end
 
-@implementation ViewController
+@implementation XCViewController
 
 
-#pragma mark - ViewController lifecycle
+#pragma mark - XCViewController lifecycle
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     self.activityCount = 0;
 }
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [SVProgressHUD dismiss];
+    [XCProgressHUD dismiss];
 }
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -60,7 +62,6 @@
     [self addObserver:self forKeyPath:@"activityCount" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-
 #pragma mark - Notification handling
 
 - (void)handleNotification:(NSNotification *)notification {
@@ -72,20 +73,26 @@
     }
 }
 
-
 #pragma mark - Show Methods Sample
 
 - (void)show {
-    [SVProgressHUD show];
+    if ([XCProgressHUD sharedView].defaultAnimationType == SVProgressHUDAnimationTypeFlat) {
+        [XCProgressHUD showLoadingHUD];
+    } else {
+        [XCProgressHUD showWithStatus:@"加载中..."];
+    }
     self.activityCount++;
 }
 
 - (void)showWithStatus {
-    [SVProgressHUD showWithStatus:@"Doing Stuff"];
+    [XCProgressHUD showToast:@"文本内容，不超过14个字位符文本内容"];
     self.activityCount++;
 }
 
 static float progress = 0.0f;
+- (IBAction)defaultStyle:(UIButton *)sender {
+    [XCProgressHUD defaultStyle];
+}
 
 - (IBAction)showWithProgress:(id)sender {
     progress = 0.0f;
@@ -95,8 +102,8 @@ static float progress = 0.0f;
 
 - (void)increaseProgress {
     progress += 0.05f;
-    [SVProgressHUD showProgress:progress status:@"Loading"];
     
+    [XCProgressHUD showProgress:progress];
     if(progress < 1.0f){
         [self performSelector:@selector(increaseProgress) withObject:nil afterDelay:0.1f];
     } else {
@@ -108,16 +115,15 @@ static float progress = 0.0f;
     }
 }
 
-
 #pragma mark - Dismiss Methods Sample
 
 - (void)dismiss {
-    [SVProgressHUD dismiss];
+    [XCProgressHUD dismiss];
     self.activityCount = 0;
 }
 
 - (IBAction)popActivity {
-    [SVProgressHUD popActivity];
+    [XCProgressHUD popActivity];
     
     if (self.activityCount != 0) {
         self.activityCount--;
@@ -125,57 +131,55 @@ static float progress = 0.0f;
 }
 
 - (IBAction)showInfoWithStatus {
-    [SVProgressHUD showInfoWithStatus:@"Useful Information."];
+    [XCProgressHUD showInfoWithStatus:@"警示内容"];
     self.activityCount++;
 }
 
 - (void)showSuccessWithStatus {
-    [SVProgressHUD showSuccessWithStatus:@"Great Success!"];
+    [XCProgressHUD showSuccessWithStatus:@"成功"];
     self.activityCount++;
 }
 
 - (void)showErrorWithStatus {
-    [SVProgressHUD showErrorWithStatus:@"Failed with Error"];
+    [XCProgressHUD showErrorWithStatus:@"失败"];
     self.activityCount++;
 }
-
 
 #pragma mark - Styling
 
 - (IBAction)changeStyle:(id)sender {
     UISegmentedControl *segmentedControl = (UISegmentedControl*)sender;
     if(segmentedControl.selectedSegmentIndex == 0){
-        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleLight];
+        [XCProgressHUD setDefaultStyle:SVProgressHUDStyleLight];
     } else {
-        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+        [XCProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     }
 }
 
 - (IBAction)changeAnimationType:(id)sender {
     UISegmentedControl *segmentedControl = (UISegmentedControl*)sender;
     if(segmentedControl.selectedSegmentIndex == 0){
-        [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
+        [XCProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
     } else {
-        [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
+        [XCProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
     }
 }
 
 - (IBAction)changeMaskType:(id)sender {
     UISegmentedControl *segmentedControl = (UISegmentedControl*)sender;
     if(segmentedControl.selectedSegmentIndex == 0){
-        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeNone];
+        [XCProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeNone];
     } else if(segmentedControl.selectedSegmentIndex == 1){
-        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
+        [XCProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
     } else if(segmentedControl.selectedSegmentIndex == 2){
-        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+        [XCProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
     } else if(segmentedControl.selectedSegmentIndex == 3){
-        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
+        [XCProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
     } else {
-        [SVProgressHUD setBackgroundLayerColor:[[UIColor redColor] colorWithAlphaComponent:0.4]];
-        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeCustom];
+        [XCProgressHUD setBackgroundLayerColor:[[UIColor redColor] colorWithAlphaComponent:0.4]];
+        [XCProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeCustom];
     }
 }
-
 
 #pragma mark - Helper
 

@@ -20,6 +20,8 @@
 		22A586C6233238C8000863C6 /* XCProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 22A586C4233238C8000863C6 /* XCProgressHUD.bundle */; };
 		22B9D43816B92E4D00E71652 /* SVProgressHUD.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 22B9D43716B92E4D00E71652 /* SVProgressHUD.podspec */; };
 		22D13AB71365FEAC0025FCC9 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 22D13AB61365FEAC0025FCC9 /* SVProgressHUD.bundle */; };
+		22FAD3662334B16700FADF65 /* XCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FAD3652334B16700FADF65 /* XCViewController.m */; };
+		22FAD3672334B16700FADF65 /* XCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FAD3652334B16700FADF65 /* XCViewController.m */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		28D7ACF80DDB3853001CB0EB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* ViewController.m */; };
 		3C0DE6921F6096230062BA4A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C0DE68E1F6096230062BA4A /* LaunchScreen.storyboard */; };
@@ -55,6 +57,8 @@
 		22A586C4233238C8000863C6 /* XCProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = XCProgressHUD.bundle; sourceTree = "<group>"; };
 		22B9D43716B92E4D00E71652 /* SVProgressHUD.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SVProgressHUD.podspec; path = ../SVProgressHUD.podspec; sourceTree = "<group>"; };
 		22D13AB61365FEAC0025FCC9 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		22FAD3642334B16700FADF65 /* XCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XCViewController.h; sourceTree = "<group>"; };
+		22FAD3652334B16700FADF65 /* XCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XCViewController.m; sourceTree = "<group>"; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28D7ACF60DDB3853001CB0EB /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		28D7ACF70DDB3853001CB0EB /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
@@ -111,6 +115,8 @@
 				63ADC4B81364C1360060E45B /* SVProgressHUD */,
 				28D7ACF60DDB3853001CB0EB /* ViewController.h */,
 				28D7ACF70DDB3853001CB0EB /* ViewController.m */,
+				22FAD3642334B16700FADF65 /* XCViewController.h */,
+				22FAD3652334B16700FADF65 /* XCViewController.m */,
 				3C0DE68E1F6096230062BA4A /* LaunchScreen.storyboard */,
 				3C0DE6901F6096230062BA4A /* Main.storyboard */,
 				1D3623240D0F684500981E51 /* AppDelegate.h */,
@@ -333,6 +339,7 @@
 				28D7ACF80DDB3853001CB0EB /* ViewController.m in Sources */,
 				3C32D9211CAC66CA009CDAB0 /* SVProgressAnimatedView.m in Sources */,
 				63ADC4BC1364C1360060E45B /* SVProgressHUD.m in Sources */,
+				22FAD3662334B16700FADF65 /* XCViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +355,7 @@
 				D36EDBD21BE7E9B000BD0EF1 /* main.m in Sources */,
 				D396A65E1BE7EB4700E6E1BF /* SVRadialGradientLayer.m in Sources */,
 				D396A6601BE7EB4D00E6E1BF /* SVIndefiniteAnimatedView.m in Sources */,
+				22FAD3672334B16700FADF65 /* XCViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

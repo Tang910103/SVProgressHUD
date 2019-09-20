@@ -14,6 +14,7 @@
 @property (nonatomic, weak, readonly) UIVisualEffectView *hudView;
 @property (nonatomic, weak, readonly) UIImageView *imageView;
 + (SVProgressHUD*)sharedView;
+- (void)dismissWithDelay:(NSTimeInterval)delay completion:(SVProgressHUDDismissCompletion)completion;
 @end
 
 @interface XCProgressHUD ()
@@ -35,12 +36,15 @@
 
 + (MY_CLASS *)sharedView
 {
-    static MY_CLASS *shareObject = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        shareObject = [[super allocWithZone:NULL] init];
-    });
-    return shareObject;
+    static dispatch_once_t once;
+    
+    static MY_CLASS *sharedView;
+#if !defined(SV_APP_EXTENSIONS)
+    dispatch_once(&once, ^{ sharedView = [[self alloc] initWithFrame:[[[UIApplication sharedApplication] delegate] window].bounds]; });
+#else
+    dispatch_once(&once, ^{ sharedView = [[self alloc] initWithFrame:[[UIScreen mainScreen] bounds]]; });
+#endif
+    return sharedView;
 }
 
 + (void)load
@@ -48,32 +52,38 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [self sharedView];
-        [self setMinimumDismissTimeInterval:60 * 15];
-        [self setMaximumDismissTimeInterval:60 * 15];
-        [self setCornerRadius:4.0];
-        [self setForegroundColor:UIColor.whiteColor];
-        [self setBackgroundColor:[UIColor colorWithRed:34/255.0 green:34/255.0 blue:34/255.0 alpha:1.0]];
-        [self setFont:[UIFont systemFontOfSize:16.0]];
-        [self setDefaultMaskType:SVProgressHUDMaskTypeClear];
-        [self setRingThickness:6.0];
-        [self setRingRadius:52.0];
-        [self setRingNoTextRadius:52.0];
-        [self sharedView]->foregroundColor_ = [self sharedView].foregroundColor;
-        [self sharedView]->font_ = [self sharedView].font;
-
-        NSBundle *bundle = [NSBundle bundleForClass:[XCProgressHUD class]];
-        NSURL *url = [bundle URLForResource:@"XCProgressHUD" withExtension:@"bundle"];
-        if (url) {
-            NSBundle *imageBundle = [NSBundle bundleWithURL:url];
-            [self setSuccessImage:[UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"success" ofType:@"png"]]];
-            [self setInfoImage:[UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"info" ofType:@"png"]]];
-            [self setErrorImage:[UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"error" ofType:@"png"]]];
-            [self sharedView].loadingImage = [UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"loading" ofType:@"png"]];
-        }
+        [self defaultStyle];
     });
 }
 
 #pragma mark --------------- public methods
+
++ (void)defaultStyle
+{
+    [self setMinimumDismissTimeInterval:60 * 15];
+    [self setMaximumDismissTimeInterval:60 * 15];
+    [self setCornerRadius:4.0];
+    [self setForegroundColor:UIColor.whiteColor];
+    [self setBackgroundColor:[UIColor colorWithRed:34/255.0 green:34/255.0 blue:34/255.0 alpha:1.0]];
+    [self setFont:[UIFont systemFontOfSize:16.0]];
+    [self setDefaultMaskType:SVProgressHUDMaskTypeClear];
+    [self setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
+    [self setRingThickness:6.0];
+    [self setRingRadius:52.0];
+    [self setRingNoTextRadius:52.0];
+    [self sharedView]->foregroundColor_ = [self sharedView].foregroundColor;
+    [self sharedView]->font_ = [self sharedView].font;
+    
+    NSBundle *bundle = [NSBundle bundleForClass:[XCProgressHUD class]];
+    NSURL *url = [bundle URLForResource:@"XCProgressHUD" withExtension:@"bundle"];
+    if (url) {
+        NSBundle *imageBundle = [NSBundle bundleWithURL:url];
+        [self setSuccessImage:[UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"success" ofType:@"png"]]];
+        [self setInfoImage:[UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"info" ofType:@"png"]]];
+        [self setErrorImage:[UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"error" ofType:@"png"]]];
+        [self sharedView].loadingImage = [UIImage imageWithContentsOfFile:[imageBundle pathForResource:@"loading" ofType:@"png"]];
+    }
+}
 + (void)showImage:(UIImage *)image status:(NSString *)status
 {
     [self showImage:image status:status duration:2];
@@ -131,6 +141,11 @@
     [self dismissWithDelay:duration];
 }
 
++ (void)showLoadingHUD
+{
+    [self showLoadingHUDWithMsg:@"加载中…"];
+}
+
 + (void)showLoadingHUDWithMsg:(NSString *)msg
 {
     [self showImage:[self sharedView].loadingImage status:msg duration:60 * 100];
@@ -152,7 +167,12 @@
 
 + (void)showProgress:(float)progress
 {
-    [self showImage:UIImage.new status:[NSString stringWithFormat:@"%.f%%",progress * 100] duration:60 * 100];
+    [self showProgress:progress status:[NSString stringWithFormat:@"%.f%%",progress * 100]];
+}
+
++ (void)showProgress:(float)progress status:(NSString*)status
+{
+    [super showImage:UIImage.new status:status];
     UIFont *f = [UIFont systemFontOfSize:21];
     if ([self sharedView].font != f) {
         [self sharedView]->foregroundColor_ = [self sharedView].foregroundColor;
@@ -162,7 +182,7 @@
     [self setMinimumSize:CGSizeMake(116, 116)];
     [self setBackgroundColor:UIColor.clearColor];
     [self setFont:f];
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [super sharedView].ringView.hidden = [super sharedView].backgroundRingView.hidden = YES;
         [self sharedView].statusLabel.center = [self sharedView].progressView.center = [self sharedView].progressBackgroundView.center = [self sharedView].hudView.contentView.center;
@@ -170,11 +190,11 @@
     });
 }
 
-+ (void)dismissWithDelay:(NSTimeInterval)delay completion:(SVProgressHUDDismissCompletion)completion
+- (void)dismissWithDelay:(NSTimeInterval)delay completion:(SVProgressHUDDismissCompletion)completion
 {
     [super dismissWithDelay:delay completion:^{
-        [[self sharedView].imageView.layer removeAllAnimations];
-        [[self sharedView] removeProgressView];
+        [self.imageView.layer removeAllAnimations];
+        [self removeProgressView];
     }];
 }
 
